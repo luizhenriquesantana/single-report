@@ -46,6 +46,7 @@ Column should be name-based, instead of index-based to make it easy to insert/re
 
 # How to use:
 1- Download the project, open the "src/main/resources/application.properties" and update the configuration as better suits to you (please don't forget to add the input files to the chosen directory). Ex.:
+
     global.config.source.directory=C:/dev/TMP/single-report/input
     global.config.destination.directory=C:/dev/TMP/single-report/output
     global.config.file.trade=trade.csv
@@ -56,6 +57,11 @@ Column should be name-based, instead of index-based to make it easy to insert/re
     logging.config=file:./config/logback.xml
 
 2- If you have maven installed, please run:
+
     2.1- "mvn clean package"
     2.2- "java -jar target\single-report-1.0.jar"
     2.3- Open the destination directory and check the file content.
+    2.4. In case of any issues, please open the log file configured in the logback.xml file to start the troubleshooting. 
+         I've decided to use a logback rolling configuration and have a correlationID to keep track of the requests going on.
+    
+3- Thanks
