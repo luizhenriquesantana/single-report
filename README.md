@@ -42,3 +42,20 @@ Term = Column MaturityDate - Today. If MaturityDate is blank or already matured,
 Notes:
 Design your program so that it can support multiple data sources (Here we have csv file, but we can switch to database, web service, or other 
 Column should be name-based, instead of index-based to make it easy to insert/re-order.
+
+
+# How to use:
+1- Download the project, open the "src/main/resources/application.properties" and update the configuration as better suits to you (please don't forget to add the input files to the chosen directory). Ex.:
+    global.config.source.directory=C:/dev/TMP/single-report/input
+    global.config.destination.directory=C:/dev/TMP/single-report/output
+    global.config.file.trade=trade.csv
+    global.config.file.refData=refdata.csv
+    global.config.file.valuation=valuation.csv
+    global.config.file.outputFile=outputTrade.csv
+    global.config.number.of.threads=1
+    logging.config=file:./config/logback.xml
+
+2- If you have maven installed, please run:
+    2.1- "mvn clean package"
+    2.2- "java -jar target\single-report-1.0.jar"
+    2.3- Open the destination directory and check the file content.
