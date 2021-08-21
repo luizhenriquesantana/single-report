@@ -1,6 +1,8 @@
 # single-report
-A repo for a project created as part of a selective process to join TD Securities.
+A repo for a project created as part of a selective process to join TD Securities:
 
+
+# Problem
 Merge all 3 data files into a single report
 
 refdata and trade join by column Inventory
@@ -44,7 +46,7 @@ Design your program so that it can support multiple data sources (Here we have c
 Column should be name-based, instead of index-based to make it easy to insert/re-order.
 
 
-# How to use:
+# How to work with this proposed solution:
 1- Download the project, open the "src/main/resources/application.properties" and update the configuration as better suits to you (please don't forget to add the input files to the chosen directory). Ex.:
 
     global.config.source.directory=C:/dev/TMP/single-report/input
