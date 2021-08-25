@@ -26,11 +26,6 @@ public class SingleReportApplication implements CommandLineRunner {
 	private Dispatcher dispatcher;
 
 	public static void main(String[] args) {
-//		SpringApplication.run(SingleReportApplication.class, args);
-
-//		application = new SpringApplication(SingleReportApplication.class);
-//		applicationContext = application.run(args);
-
 
 		System.exit(SpringApplication.exit(SpringApplication.run(SingleReportApplication.class, args)));
 
@@ -39,7 +34,7 @@ public class SingleReportApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		LOG.info("{}", "Starting MoGeneratorApplication");
 		dispatcher.run();
 		LOG.info("{}", "Stopping MoGeneratorApplication");

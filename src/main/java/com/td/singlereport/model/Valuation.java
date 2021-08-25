@@ -8,6 +8,8 @@ import java.util.Objects;
 
 public class Valuation implements Serializable {
 
+    private static final long serialVersionUID = 5696128751655765682L;
+
     private Long tradeId;
     private BigDecimal uqlOcMmbMs;
     private BigDecimal uqlOcMmbMsPc;
@@ -60,15 +62,9 @@ public class Valuation implements Serializable {
 
     @Override
     public String toString() {
-//        return "Valuation{" +
-//                "tradeId=" + tradeId +
-//                ", uqlOcMmbMs=" + uqlOcMmbMs +
-//                ", uqlOcMmbMsPc=" + uqlOcMmbMsPc +
-//                '}';
+
 
         StringBuilder sb = new StringBuilder();
-//        sb.append(tradeId);
-//        sb.append(Constants.FILE.COMMA_SEPARATOR);
         sb.append(uqlOcMmbMs);
         sb.append(Constants.FILE.COMMA_SEPARATOR);
         sb.append(uqlOcMmbMsPc);

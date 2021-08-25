@@ -11,6 +11,8 @@ import java.io.Serializable;
 @ConfigurationProperties
 public class Config implements Serializable {
 
+    private static final long serialVersionUID = 2236220959749502227L;
+
     @Value(Constants.CONFIGURATION.SOURCE_INPUT_DIRECTORY)
     private String sourceInputDirectory;
 

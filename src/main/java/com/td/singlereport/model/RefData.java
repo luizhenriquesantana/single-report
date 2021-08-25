@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class RefData implements Serializable {
 
+    private static final long serialVersionUID = 3379517527249134569L;
+
     private String topOfHouse;
     private String segment;
     private String viceChair;
@@ -129,18 +131,6 @@ public class RefData implements Serializable {
 
     @Override
     public String toString() {
-//        return "RefData{" +
-//                "topOfHouse='" + topOfHouse + '\'' +
-//                ", segment='" + segment + '\'' +
-//                ", viceChair='" + viceChair + '\'' +
-//                ", globalBusiness='" + globalBusiness + '\'' +
-//                ", policy='" + policy + '\'' +
-//                ", desk='" + desk + '\'' +
-//                ", portfolio='" + portfolio + '\'' +
-//                ", BU=" + BU +
-//                ", cline='" + cline + '\'' +
-//                ", inventory='" + inventory + '\'' +
-//                '}';
         StringBuilder sb = new StringBuilder();
 
         sb.append(topOfHouse);
@@ -160,8 +150,6 @@ public class RefData implements Serializable {
         sb.append(BU);
         sb.append(Constants.FILE.COMMA_SEPARATOR);
         sb.append(cline);
-//        sb.append(Constants.FILE.COMMA_SEPARATOR);
-//        sb.append(inventory);
 
         return sb.toString();
     }

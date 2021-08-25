@@ -4,6 +4,8 @@ import java.io.File;
 
 public class SingleReportException extends Exception{
 
+    private static final long serialVersionUID = -5460476453870766472L;
+    
     private File file;
 
     private Long tradeId;

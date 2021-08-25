@@ -29,7 +29,7 @@ public class CSVGenerator implements Callable<String>, Serializable {
 
     private static final long serialVersionUID = 3011901089959939524L;
 
-    private Logger LOG = LoggerFactory.getLogger(CSVGenerator.class);
+    private final Logger LOG = LoggerFactory.getLogger(CSVGenerator.class);
 
     private String correlationID;
 
@@ -49,7 +49,7 @@ public class CSVGenerator implements Callable<String>, Serializable {
     private Config config;
 
     @Override
-    public String call() throws Exception {
+    public String call() {
         LOG.trace("Entering call(). CorrelationID={}", getCorrelationID());
         return generateFile();
     }
@@ -59,44 +59,49 @@ public class CSVGenerator implements Callable<String>, Serializable {
         try {
 
             String filePath = buidOutputFilePath();
-            FileWriter csvWriter = new FileWriter(filePath.toString());
-            LOG.debug("File {} was generated properly. To be fulfilled...", filePath.toString());
+            FileWriter csvWriter = new FileWriter(filePath);
+            LOG.debug("File {} was generated properly. To be fulfilled...", filePath);
             String headers = buildHeaders();
-            csvWriter.append(headers.toString());
-
-
+            csvWriter.append(headers);
 
             LOG.debug("Looping tradeList. CorrelationID={}", getCorrelationID());
-            tradeList.stream().forEach(t -> {
+            getTradeList().forEach(t -> {
                 StringBuilder tuple = new StringBuilder();
                 try{
 
                     tuple.append(Constants.FILE.NEW_LINE);
-                    RefData refData = refDataList.stream().filter(r -> r.getInventory().equalsIgnoreCase(t.getInventory())).findFirst().orElse(null);
+                    RefData refData = getRefDataList().stream().filter(r -> r.getInventory().equalsIgnoreCase(t.getInventory())).findFirst().orElse(null);
 
                     if(refData != null){
-                        LOG.debug("refData='{}' found for inventory='{}'. CorrelationID={}", refData.toString(), refData.getInventory(), getCorrelationID());
-                        tuple.append(refData.toString());
+                        LOG.debug("refData='{}' found for inventory='{}'. CorrelationID={}", refData, refData.getInventory(), getCorrelationID());
+                        tuple.append(refData);
                     }else{
                         tuple.append(",,,,,,,,,");
                     }
                     tuple.append(Constants.FILE.COMMA_SEPARATOR);
                     tuple.append(t.toString());
                     tuple.append(Constants.FILE.COMMA_SEPARATOR);
-                    Valuation valuation = valuationList.stream().filter(v -> v.getTradeId().equals(t.getTradeId())).findFirst().orElse(null);
+                    Valuation valuation = getValuationList().stream().filter(v -> v.getTradeId().equals(t.getTradeId())).findFirst().orElse(null);
                     if(valuation != null){
-                        LOG.debug("valuation='{}' found for tradeId='{}'. CorrelationID={}", valuation.toString(), valuation.getTradeId(), getCorrelationID());
-                        tuple.append(valuation.toString());
+                        LOG.debug("valuation='{}' found for tradeId='{}'. CorrelationID={}", valuation, valuation.getTradeId(), getCorrelationID());
+                        tuple.append(valuation);
 
 
                         //calculate MS-PC
-                        BigDecimal mspc = calculateMsPC(tuple, t, valuation);
+                        BigDecimal mspc = calculateMsPC(t, valuation);
+                        tuple.append(Constants.FILE.COMMA_SEPARATOR);
+                        tuple.append(mspc);
 
                         //calculate BreakStatus
-                        calculateBreakStatus(tuple, t, mspc);
+                        String breakStatus = calculateBreakStatus(t, mspc);
+                        tuple.append(Constants.FILE.COMMA_SEPARATOR);
+                        tuple.append(breakStatus);
 
                         //calculate Term
-                        calculateTerm(tuple, t);
+                        String term = calculateTerm(t);
+                        tuple.append(Constants.FILE.COMMA_SEPARATOR);
+                        tuple.append(term);
+
 
                     }else{
                         LOG.debug("Valuation not found for tradeId='{}'. MS-PC and BreakStatus won't be calculated. CorrelationID={}", t.getTradeId(), getCorrelationID());
@@ -105,7 +110,7 @@ public class CSVGenerator implements Callable<String>, Serializable {
                     LOG.debug("Writing following tuple={} in the file.", tuple);
                     csvWriter.append(tuple);
                 }catch (Exception e){
-                    String message = String.format("%s occurred while processing tradeId={}. CorrelationID={}. Details: %s", e.getClass().getSimpleName(), t.getTradeId(), getCorrelationID(), e.getLocalizedMessage());
+                    String message = String.format("%s occurred while processing tradeId=%s. CorrelationID=%s. Details: %s", e.getClass().getSimpleName(), t.getTradeId(), getCorrelationID(), e.getLocalizedMessage());
                     LOG.error(message, e);
                 }
 
@@ -134,8 +139,8 @@ public class CSVGenerator implements Callable<String>, Serializable {
         filePath.append(new Timestamp(System.currentTimeMillis()).getTime());
         filePath.append(Constants.FILE.UNDERSCORE);
         filePath.append(config.getOutputFile());
-        LOG.debug("File={} will be generated", filePath.toString());
-        LOG.trace("Leaving buildFilePath()={}. CorrelationID={}", filePath.toString(), getCorrelationID());
+        LOG.debug("File={} will be generated", filePath);
+        LOG.trace("Leaving buildFilePath()={}. CorrelationID={}", filePath, getCorrelationID());
         return filePath.toString();
     }
 
@@ -158,13 +163,13 @@ public class CSVGenerator implements Callable<String>, Serializable {
         headers.append("BreakStatus");
         headers.append(Constants.FILE.COMMA_SEPARATOR);
         headers.append("Term");
-        LOG.info("Following headers({}) created. CorrelationID={}",headers.toString(), getCorrelationID());
-        LOG.trace("Leaving buildHeaders()={}. CorrelationID={}", headers.toString(), getCorrelationID());
+        LOG.info("Following headers({}) created. CorrelationID={}", headers, getCorrelationID());
+        LOG.trace("Leaving buildHeaders()={}. CorrelationID={}", headers, getCorrelationID());
         return headers.toString();
     }
 
-    private BigDecimal calculateMsPC(StringBuilder tuple, Trade t, Valuation valuation) {
-        LOG.trace("Entering calculateMsPC(tuple={}, trade={}, valuation={}. CorrelationID={}", tuple, t.getTradeId(), valuation, getCorrelationID());
+    private BigDecimal calculateMsPC(Trade t, Valuation valuation) {
+        LOG.trace("Entering calculateMsPC(trade={}, valuation={}. CorrelationID={}", t.getTradeId(), valuation, getCorrelationID());
 
         BigDecimal mspc = null;
         if(valuation.getUqlOcMmbMs() != null && valuation.getUqlOcMmbMsPc() != null){
@@ -172,14 +177,13 @@ public class CSVGenerator implements Callable<String>, Serializable {
             LOG.debug("MS-PC={} calculated for tradeId='{}'. CorrelationID={}", mspc, t.getTradeId(), getCorrelationID());
 
         }
-        tuple.append(Constants.FILE.COMMA_SEPARATOR);
-        tuple.append(mspc != null ? mspc : "");
-        LOG.trace("Leaving calculateMsPC(tuple, trade, valuation)={}. CorrelationID={}", mspc, getCorrelationID());
+
+        LOG.trace("Leaving calculateMsPC(trade, valuation)={}. CorrelationID={}", mspc, getCorrelationID());
         return mspc;
     }
 
-    private void calculateBreakStatus(StringBuilder tuple, Trade trade, BigDecimal mspc) {
-        LOG.trace("Entering calculateBreakStatus=(tuple={}, trade={}, mspc={}). CorrelationID={}", tuple, trade.getTradeId(), mspc, getCorrelationID());
+    private String calculateBreakStatus(Trade trade, BigDecimal mspc) {
+        LOG.trace("Entering calculateBreakStatus=(trade={}, mspc={}). CorrelationID={}", trade.getTradeId(), mspc, getCorrelationID());
         String breakStatus = "";
         if(mspc != null){
             if(mspc.compareTo(BigDecimal.ZERO) >= 0 && mspc.compareTo(BigDecimal.valueOf(99)) <= 0){
@@ -195,13 +199,13 @@ public class CSVGenerator implements Callable<String>, Serializable {
             }
             LOG.debug("BreakStatus='{}' calculated for tradeId='{}'. CorrelationID={}", breakStatus, trade.getTradeId(), getCorrelationID());
         }
-        tuple.append(Constants.FILE.COMMA_SEPARATOR);
-        tuple.append(breakStatus);
-        LOG.trace("Leaving calculateBreakStatus=(tuple, trade, mspc)={}. CorrelationID={}", breakStatus, getCorrelationID());
+
+        LOG.trace("Leaving calculateBreakStatus=(trade, mspc)={}. CorrelationID={}", breakStatus, getCorrelationID());
+        return breakStatus;
     }
 
-    private void calculateTerm(StringBuilder tuple, Trade trade) {
-        LOG.trace("Entering calculateTerm(tuple={}, trade={}. CorrelationID={}", tuple, trade.getTradeId(), getCorrelationID());
+    private String calculateTerm(Trade trade) {
+        LOG.trace("Entering calculateTerm(trade={}. CorrelationID={}", trade.getTradeId(), getCorrelationID());
 
         String term = "";
         if(trade.getMaturityDate() != null){
@@ -228,9 +232,9 @@ public class CSVGenerator implements Callable<String>, Serializable {
                 }
             }
         }
-        tuple.append(Constants.FILE.COMMA_SEPARATOR);
-        tuple.append(term);
-        LOG.trace("Leaving calculateTerm(tuple, trade)={}. CorrelationID={}", term, getCorrelationID());
+
+        LOG.trace("Leaving calculateTerm(trade)={}. CorrelationID={}", term, getCorrelationID());
+        return term;
     }
 
     public String getCorrelationID() {

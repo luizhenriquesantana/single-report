@@ -3,12 +3,13 @@ package com.td.singlereport.model;
 import com.td.singlereport.constants.Constants;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
 public class Trade implements Serializable {
+
+    private static final long serialVersionUID = -1703100557735595690L;
 
     private String inventory;
     private String book;
@@ -27,10 +28,6 @@ public class Trade implements Serializable {
     private Date tradeDate;
     private Date startDate;
     private Date maturityDate;
-
-//    private BigDecimal msPc;
-//    private String breakStatus;
-//    private String term;
 
     public Trade() {
     }
@@ -53,9 +50,6 @@ public class Trade implements Serializable {
         this.tradeDate = tradeDate;
         this.startDate = startDate;
         this.maturityDate = maturityDate;
-//        this.msPc = msPc;
-//        this.breakStatus = breakStatus;
-//        this.term = term;
     }
 
     @Override
@@ -209,30 +203,6 @@ public class Trade implements Serializable {
 
     @Override
     public String toString(){
-
-        //        return "Trade{" +
-//                "inventory='" + inventory + '\'' +
-//                ", book='" + book + '\'' +
-//                ", system='" + system + '\'' +
-//                ", legalEntity='" + legalEntity + '\'' +
-//                ", tradeId=" + tradeId +
-//                ", version=" + version +
-//                ", tradeStatus='" + tradeStatus + '\'' +
-//                ", productType='" + productType + '\'' +
-//                ", resettingLeg='" + resettingLeg + '\'' +
-//                ", productSubType='" + productSubType + '\'' +
-//                ", tdsProductType='" + tdsProductType + '\'' +
-//                ", secCodeSubType='" + secCodeSubType + '\'' +
-//                ", swapType='" + swapType + '\'' +
-//                ", description='" + description + '\'' +
-//                ", tradeDate=" + tradeDate +
-//                ", startDate=" + startDate +
-//                ", maturityDate=" + maturityDate +
-//                ", msPc=" + msPc +
-//                ", breakStatus='" + breakStatus + '\'' +
-//                ", term='" + term + '\'' +
-//                '}';
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
         StringBuilder sb = new StringBuilder();
@@ -269,12 +239,6 @@ public class Trade implements Serializable {
         sb.append(startDate != null ? sdf.format(startDate) : null);
         sb.append(Constants.FILE.COMMA_SEPARATOR);
         sb.append(maturityDate != null ? sdf.format(maturityDate) : null);
-//        sb.append(Constants.FILE.COMMA_SEPARATOR);
-//        sb.append(msPc);
-//        sb.append(Constants.FILE.COMMA_SEPARATOR);
-//        sb.append(breakStatus);
-//        sb.append(Constants.FILE.COMMA_SEPARATOR);
-//        sb.append(term != null ? sdf.format(term) : null);
 
         return sb.toString();
     }

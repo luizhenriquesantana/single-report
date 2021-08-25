@@ -22,7 +22,6 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,6 @@ public class CSVLoader implements Serializable {
 
         Map<String, Integer> headerMap = null;
         try{
-//            tradeList = new ArrayList<>();
             LOG.info("Loading trade file from '{}'. CorrelationID={}.", config.getSourceInputDirectory(), correlationID);
 
             if (IOFileUtils.isDirectory(config.getSourceInputDirectory())) {
@@ -99,12 +97,10 @@ public class CSVLoader implements Serializable {
 
     public Map<String, Integer> loadRefData(String correlationID, List<RefData> refDataList) throws SingleReportException {
         LOG.trace("Entering loadRefData(correlationID={})", correlationID);
-//        List<RefData> refDataList = null;
         Long tradeId = null;
         File refDataFile = null;
         Map<String, Integer> headerMap = null;
         try{
-//            refDataList = new ArrayList<>();
             LOG.info("Loading trade file from '{}'. CorrelationID={}.", config.getSourceInputDirectory(), correlationID);
 
             if (IOFileUtils.isDirectory(config.getSourceInputDirectory())) {
@@ -146,12 +142,10 @@ public class CSVLoader implements Serializable {
 
     public Map<String, Integer> loadValuation(String correlationID,List<Valuation> valuationList) throws SingleReportException {
         LOG.trace("Entering loadValuation(correlationID={})", correlationID);
-//        List<Valuation> valuationList = null;
         Long tradeId = null;
         File valuationFile = null;
         Map<String, Integer> headerMap = null;
         try{
-//            valuationList = new ArrayList<>();
             LOG.info("Loading trade file from '{}'. CorrelationID={}.", config.getSourceInputDirectory(), correlationID);
 
             if (IOFileUtils.isDirectory(config.getSourceInputDirectory())) {
@@ -167,8 +161,6 @@ public class CSVLoader implements Serializable {
                 for (CSVRecord record : csvParser) {
                     Valuation valuation = new Valuation();
                     valuation.setTradeId(Long.valueOf(record.get("TradeId")));
-//                    valuation.setUqlOcMmbMs(Double.valueOf(record.get("UQL_OC_MMB_MS")));
-//                    valuation.setUqlOcMmbMsPc(Double.valueOf(record.get("UQL_OC_MMB_MS_PC")));
                     valuation.setUqlOcMmbMs(new BigDecimal(record.get("UQL_OC_MMB_MS")));
                     valuation.setUqlOcMmbMsPc(new BigDecimal(record.get("UQL_OC_MMB_MS_PC")));
 

@@ -15,6 +15,8 @@ import java.util.UUID;
 @Scope( value = Constants.SCOPE.SINGLETON)
 public class Dispatcher implements Serializable {
 
+    private static final long serialVersionUID = -8960527634292015928L;
+
     private final Logger LOG = LoggerFactory.getLogger(Dispatcher.class);
 
     @Autowired

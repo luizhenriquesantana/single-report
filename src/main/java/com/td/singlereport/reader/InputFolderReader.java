@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,8 @@ import java.util.concurrent.Executors;
 @Component
 @Scope(value = Constants.SCOPE.SINGLETON)
 public class InputFolderReader implements Runnable, Serializable {
+
+    private static final long serialVersionUID = 546409737941790198L;
 
     private static final Logger LOG = LoggerFactory.getLogger(InputFolderReader.class);
 
@@ -66,7 +67,7 @@ public class InputFolderReader implements Runnable, Serializable {
         }
     }
 
-    private void processInputFolder() throws InterruptedException, IOException, SingleReportException {
+    private void processInputFolder() throws InterruptedException, SingleReportException {
         LOG.trace("Entering processSourceFolder() with. CorrelationID={}.", getCorrelationID());
 
         List<Trade> tradeList = new ArrayList<>();
